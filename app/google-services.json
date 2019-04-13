@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1047898804671",
+    "firebase_url": "https://macaw-ef6b5.firebaseio.com",
+    "project_id": "macaw-ef6b5",
+    "storage_bucket": "macaw-ef6b5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1047898804671:android:a99ddca766876dab",
+        "android_client_info": {
+          "package_name": "com.example.macaw"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1047898804671-f3oheuneu0spdolpa9c9o6f2aisqpe11.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlBdqLOQylJcVSNZSbn76XkvSB1bBXMsE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1047898804671-f3oheuneu0spdolpa9c9o6f2aisqpe11.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

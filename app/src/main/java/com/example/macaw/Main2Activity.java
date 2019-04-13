@@ -1,7 +1,9 @@
 package com.example.macaw;
 
+import android.hardware.Camera;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 public class Main2Activity extends AppCompatActivity {
 
@@ -32,5 +34,5 @@ public class Main2Activity extends AppCompatActivity {
             camera.release();
             camera = null;
         }
-    }
+     }
 }
