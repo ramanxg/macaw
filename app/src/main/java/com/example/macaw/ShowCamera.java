@@ -20,22 +20,34 @@ import java.util.concurrent.locks.ReentrantLock;
 public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback, Camera.PreviewCallback {
 
     Camera camera;
+    ImageView imageView;
     SurfaceHolder holder;
     private byte[] mPreviewFrameBuffer;
     // Holds the current frame, so we can react on a click event:
     private final Lock lock = new ReentrantLock();
 
-    public ShowCamera(Context context, Camera camera) {
+    public ShowCamera(Context context, Camera camera, ImageView img) {
         super(context);
         this.camera = camera;
+        this.imageView = img;
         holder = getHolder();
         holder.addCallback(this);
     }
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
+
+        System.out.println("hi");
         try {
             lock.lock();
             mPreviewFrameBuffer = bytes;
+            System.out.println("hi");
+            Bitmap b = convertYuvByteArrayToBitmap(bytes, camera);
+            if(b != null)
+            {
+                //ImageView img = (ImageView)findViewById(R.id.imageView);
+                System.out.println(this.imageView == null);
+                this.imageView.setImageBitmap(b);
+            }
         } finally {
             lock.unlock();
         }
@@ -65,7 +77,6 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback, C
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Camera.Parameters params = camera.getParameters();
-
         if (this.getResources().getConfiguration().orientation != Configuration.ORIENTATION_LANDSCAPE)
         {
             params.set("orientation","portrait");
@@ -84,6 +95,7 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback, C
 
         try {
             camera.setPreviewDisplay(holder);
+            camera.setPreviewCallback(this);
             camera.startPreview();
         }
         catch(IOException e)

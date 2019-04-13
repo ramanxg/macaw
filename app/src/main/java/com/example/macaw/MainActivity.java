@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Camera;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -50,9 +51,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         frameLayout = (FrameLayout)findViewById(R.id.frameLayout);
         imageView = (ImageView)findViewById(R.id.imageView);
-
         camera = Camera.open();
-        showCamera = new ShowCamera(this, camera);
+        showCamera = new ShowCamera(this, camera, imageView);
         frameLayout.addView(showCamera);
 
         Button testbutton = (Button) findViewById(R.id.buttonTest);
@@ -69,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
     private void labelImage()
     {
         ImageView imageview = (ImageView) findViewById(R.id.imageView);
-
-        FirebaseVisionImage image = imageFromBitmap(currentImage);
+        Bitmap b = ((BitmapDrawable)imageView.getDrawable()).getBitmap();
+        FirebaseVisionImage image = imageFromBitmap(b);
         FirebaseVisionTextRecognizer detector = FirebaseVision.getInstance()
                 .getCloudTextRecognizer();
         tv = findViewById(R.id.textView);
@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                     System.out.println(elementText);
                     TextView t = findViewById(R.id.textView);
                     System.out.println(elementConfidence);
+                    t.setText(elementText);
                 }
             }
         }
