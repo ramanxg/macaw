@@ -13,7 +13,7 @@ public class Main2Activity extends AppCompatActivity {
         setContentView(R.layout.activity_main2);
     }
 
-    private boolean safeCameraOpen(int id) {
+    /**private boolean safeCameraOpen(int id) {
         boolean qOpened = false;
 
         try {
@@ -34,5 +34,5 @@ public class Main2Activity extends AppCompatActivity {
             camera.release();
             camera = null;
         }
-     }
+     }**/
 }

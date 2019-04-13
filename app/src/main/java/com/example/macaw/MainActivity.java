@@ -15,18 +15,19 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.ml.vision.barcode.FirebaseVisionBarcode;
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_PIC_REQUEST = 1337;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Bitmap currentImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
 
         Button camerabtn = (Button) findViewById(R.id.camerabutton);
         camerabtn.setOnClickListener(new View.OnClickListener() {
@@ -35,6 +36,23 @@ public class MainActivity extends AppCompatActivity {
                 dispatchTakePictureIntent();
             }
         });
+        Button testbutton = (Button) findViewById(R.id.buttonTest);
+        testbutton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v) {
+                labelImage();
+        }
+
+        });
+    }
+
+    private void labelImage()
+    {
+        ImageView imageview = (ImageView) findViewById(R.id.ImageView01);
+
+        FirebaseVisionImage image = imageFromBitmap(currentImage);
+
     }
 
     private void dispatchTakePictureIntent() {
@@ -47,13 +65,18 @@ public class MainActivity extends AppCompatActivity {
     {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            currentImage = (Bitmap) extras.get("data");
 
             ImageView imageview = (ImageView) findViewById(R.id.ImageView01); //sets imageview as the bitmap
-            imageview.setImageBitmap(imageBitmap);
+            imageview.setImageBitmap(currentImage);
         }
     }
-    private boolean safeCameraOpen(int id) {
+    private FirebaseVisionImage imageFromBitmap(Bitmap bitmap) {
+        // [START image_from_bitmap]
+        return FirebaseVisionImage.fromBitmap(bitmap);
+        // [END image_from_bitmap]
+    }
+    /**private boolean safeCameraOpen(int id) {
         boolean qOpened = false;
 
         try {
@@ -74,5 +97,5 @@ public class MainActivity extends AppCompatActivity {
             camera.release();
             camera = null;
         }
-    }
+    }**/
 }
