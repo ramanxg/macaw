@@ -12,8 +12,12 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.widget.ImageView;
 
+import com.google.firebase.ml.vision.common.FirebaseVisionImage;
+import com.google.firebase.ml.vision.common.FirebaseVisionImageMetadata;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -23,6 +27,7 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback, C
     ImageView imageView;
     SurfaceHolder holder;
     private byte[] mPreviewFrameBuffer;
+    private byte[] currentImageByte;
     // Holds the current frame, so we can react on a click event:
     private final Lock lock = new ReentrantLock();
 
@@ -36,31 +41,42 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback, C
     @Override
     public void onPreviewFrame(byte[] bytes, Camera camera) {
 
-        System.out.println("hi");
         try {
             lock.lock();
             mPreviewFrameBuffer = bytes;
-            System.out.println("hi");
-            Bitmap b = convertYuvByteArrayToBitmap(bytes, camera);
-            if(b != null)
+            currentImageByte = convertYuvByteArrayToByteArray(bytes, camera);
+            Bitmap bitmap = BitmapFactory.decodeByteArray(currentImageByte, 0, currentImageByte.length);
+            if(bitmap != null)
             {
-                //ImageView img = (ImageView)findViewById(R.id.imageView);
-                System.out.println(this.imageView == null);
-                this.imageView.setImageBitmap(b);
+                this.imageView.setImageBitmap(bitmap);
             }
         } finally {
             lock.unlock();
         }
     }
-    public static Bitmap convertYuvByteArrayToBitmap(byte[] data, Camera camera) {
+
+
+    public static byte[] convertYuvByteArrayToByteArray(byte[] data, Camera camera) {
         Camera.Parameters parameters = camera.getParameters();
         Camera.Size size = parameters.getPreviewSize();
         YuvImage image = new YuvImage(data, parameters.getPreviewFormat(), size.width, size.height, null);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         image.compressToJpeg(new Rect(0, 0, size.width, size.height), 100, out);
         byte[] imageBytes = out.toByteArray();
-        return BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.length);
+        return imageBytes;
     }
+    public FirebaseVisionImage imageFromArray() {
+        FirebaseVisionImageMetadata metadata = new FirebaseVisionImageMetadata.Builder()
+                .setWidth(480)   // 480x360 is typically sufficient for
+                .setHeight(360)  // image recognition BUT TOO BAD
+                .setFormat(FirebaseVisionImageMetadata.IMAGE_FORMAT_NV21)
+                //.setRotation(FirebaseVisionImageMetadata.ROTATION_90)
+                .build();
+        // [START image_from_array]
+        return FirebaseVisionImage.fromByteArray(mPreviewFrameBuffer, metadata);
+        // [END image_from_array]
+    }
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
